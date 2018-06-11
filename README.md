@@ -57,25 +57,32 @@ note: keep in mind that this is beta testing contribution is appreciated
 
 ```typescript
 import { Inject, Service } from '@gapi/core';
-import { IPFS_NODE, IPFS_READY } from '@gapi/ipfs';
-import { IPFS } from '@gapi/ipfs/namespace';
+import { IPFS_NODE_READY, IPFS } from '@gapi/ipfs';
 import { Readable } from 'stream';
-import { Subject } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 
 @Service()
 export class IpfsTestService {
 
     constructor(
-        @Inject(IPFS_NODE) private ipfs: IPFS,
-        @Inject(IPFS_READY) private ipfsReady: Subject<boolean>
+        @Inject(IPFS) private ipfs: IPFS,
+        @Inject(IPFS_NODE_READY) private ipfsNodeReady: Subject<boolean>
     ) {
-        this.ipfsReady.switchMap(() => Observable.fromPromise(this.ipfsTest())).subscribe();
-        // Later rxjs 6 will be used as follow
+        this.ipfsNodeReady
+            .switchMap(
+                () => Observable.fromPromise(this.ipfsTest())
+            )
+            .subscribe();
+
+        // Later rxjs 6 will be used as follow (gapi will migrate to rxjs 6)
+
         // import { fromPromise } from 'rxjs';
         // import { switchMap } from 'rxjs/operators';
         // this.ipfsReady.pipe(
         //     switchMap(() => fromPromise(this.ipfsTest()))
         // ).subscribe();
+
     }
 
     async ipfsTest() {
@@ -88,19 +95,25 @@ export class IpfsTestService {
         ]);
 
         const catContentInsideIpfsNode = (await this.ipfs.files.cat(file[0].hash)).toString();
-        // will print
+        // Cat content of file
         console.log(catContentInsideIpfsNode);
 
+        // Will print 'Hello world from @gapi/ipfs module'
+
         // Get file based on hash
-        const fileGet = await this.ipfs.files.get(file[0].hash);
+        // file[0].hash 'QmPhYdx4dB6TwBU1KEbYmyET7HQJoLpyERvRD4kMWv3B3a'
+        const fileInsideIpfsNode = await this.ipfs.files.get(file[0].hash);
 
         // Print content of file
-        console.log(fileGet[0].content.toString());
+        console.log(fileInsideIpfsNode[0].content.toString());
+
+        // will print 'Hello world from @gapi/ipfs module'
 
         return await Promise.resolve();
     }
 
 }
+
 ```
 
 TODO: Better documentation...

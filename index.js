@@ -14,18 +14,18 @@ const gapi_ipfs_config_1 = require("./gapi-ipfs-config");
 const gapi_ipfs_logger_1 = require("./gapi-ipfs-logger");
 const gapi_ipfs_injection_1 = require("./gapi-ipfs-injection");
 const rxjs_1 = require("rxjs");
-const Ipfs = require('ipfs');
 let GapiIpfsModule = GapiIpfsModule_1 = class GapiIpfsModule {
     static forRoot(config) {
         return {
             gapiModule: GapiIpfsModule_1,
             services: [
-                { provide: gapi_ipfs_injection_1.IPFS_READY, useValue: new rxjs_1.Subject() },
+                { provide: gapi_ipfs_injection_1.IPFS_NODE_READY, useValue: new rxjs_1.Subject() },
                 { provide: gapi_ipfs_config_1.GapiIpfsConfig, useValue: config || {} },
                 {
-                    provide: gapi_ipfs_injection_1.IPFS_NODE,
-                    deps: [gapi_ipfs_logger_1.GapiIpfsLogger, gapi_ipfs_config_1.GapiIpfsConfig, gapi_ipfs_injection_1.IPFS_READY],
+                    provide: gapi_ipfs_injection_1.IPFS,
+                    deps: [gapi_ipfs_logger_1.GapiIpfsLogger, gapi_ipfs_config_1.GapiIpfsConfig, gapi_ipfs_injection_1.IPFS_NODE_READY],
                     useFactory: (logger, config, nodeReady) => {
+                        const Ipfs = require('ipfs');
                         const node = new Ipfs(config);
                         node.on('ready', () => {
                             logger.log('Ipfs node state: Online');

@@ -1,6 +1,6 @@
 import { Service, Inject } from "@gapi/core";
 import { GapiIpfsConfig } from './gapi-ipfs-config';
-import { IPFS } from './namespace';
+import { IPFS } from './gapi-ipfs-injection';
 
 @Service()
 export class GapiIpfsLogger {
