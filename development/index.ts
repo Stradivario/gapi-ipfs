@@ -3,6 +3,7 @@ import { GapiIpfsConfig } from './gapi-ipfs-config';
 import { GapiIpfsLogger } from './gapi-ipfs-logger';
 import { IPFS, IPFS_NODE_READY, Options } from "./gapi-ipfs-injection";
 import { Subject } from "rxjs";
+import { GapiIpfsNodeInfoService } from "./gapi-ipfs-node-info";
 
 @GapiModule({
     services: [GapiIpfsConfig]
@@ -16,15 +17,19 @@ export class GapiIpfsModule {
                 { provide: GapiIpfsConfig, useValue: config || {} },
                 {
                     provide: IPFS,
-                    deps: [GapiIpfsLogger, GapiIpfsConfig, IPFS_NODE_READY],
+                    deps: [GapiIpfsLogger, GapiIpfsConfig, IPFS_NODE_READY, GapiIpfsNodeInfoService],
                     useFactory: (
                         logger: GapiIpfsLogger,
                         config: GapiIpfsConfig,
-                        nodeReady: Subject<boolean>
+                        nodeReady: Subject<boolean>,
+                        nodeInfoService: GapiIpfsNodeInfoService
                     ) => {
                         const Ipfs = require('ipfs');
                         const node: IPFS = new Ipfs(config);
-                        node.on('ready', () => {
+                        node.on('ready', async () => {
+                            const nodeInfo = (await node.id());
+                            nodeInfoService.setInfo(nodeInfo);
+                            nodeInfoService.getInfo(nodeInfo);
                             logger.log('Ipfs node state: Online');
                             nodeReady.next(true);
                         });
