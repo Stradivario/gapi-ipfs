@@ -51,7 +51,15 @@ export class Options {
     start?: boolean;
     EXPERIMENTAL?: any;
     repo?: string;
-    config?: any;
+    config?: {
+        Addresses?: {
+            API?: string,
+            Announce?: Array<any>,
+            Gateway?: string,
+            NoAnnounce?: Array<any>,
+            Swarm?: Array<string>
+        },
+    };
 }
 
 export class InitOptions {

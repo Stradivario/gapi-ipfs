@@ -37,7 +37,15 @@ export declare class Options {
     start?: boolean;
     EXPERIMENTAL?: any;
     repo?: string;
-    config?: any;
+    config?: {
+        Addresses?: {
+            API?: string;
+            Announce?: Array<any>;
+            Gateway?: string;
+            NoAnnounce?: Array<any>;
+            Swarm?: Array<string>;
+        };
+    };
 }
 export declare class InitOptions {
     emptyRepo?: boolean;
