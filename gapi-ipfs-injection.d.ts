@@ -32,10 +32,13 @@ export interface IPFS {
     pubsub: any;
     on(event: string, callback: () => void): void;
 }
+export interface ExperimentalFeatures {
+    pubsub: true;
+}
 export declare class Options {
     init?: boolean;
     start?: boolean;
-    EXPERIMENTAL?: any;
+    EXPERIMENTAL?: ExperimentalFeatures;
     repo?: string;
     config?: {
         Addresses?: {

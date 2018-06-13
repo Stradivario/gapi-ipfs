@@ -45,11 +45,13 @@ export interface IPFS {
     on(event: string, callback: () => void): void;
 }
 
-
+export interface ExperimentalFeatures {
+    pubsub: true
+}
 export class Options {
     init?: boolean;
     start?: boolean;
-    EXPERIMENTAL?: any;
+    EXPERIMENTAL?: ExperimentalFeatures;
     repo?: string;
     config?: {
         Addresses?: {
