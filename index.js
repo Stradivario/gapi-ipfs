@@ -23,6 +23,7 @@ const gapi_ipfs_logger_1 = require("./gapi-ipfs-logger");
 const gapi_ipfs_injection_1 = require("./gapi-ipfs-injection");
 const rxjs_1 = require("rxjs");
 const gapi_ipfs_node_info_1 = require("./gapi-ipfs-node-info");
+const Ipfs = require('ipfs');
 let GapiIpfsModule = GapiIpfsModule_1 = class GapiIpfsModule {
     static forRoot(config) {
         return {
@@ -34,20 +35,18 @@ let GapiIpfsModule = GapiIpfsModule_1 = class GapiIpfsModule {
                     provide: gapi_ipfs_injection_1.IPFS,
                     deps: [gapi_ipfs_logger_1.GapiIpfsLogger, gapi_ipfs_config_1.GapiIpfsConfig, gapi_ipfs_injection_1.IPFS_NODE_READY, gapi_ipfs_node_info_1.GapiIpfsNodeInfoService],
                     useFactory: (logger, config, nodeReady, nodeInfoService) => {
-                        const Ipfs = require('ipfs');
-                        const node = new Ipfs(config);
-                        node.on('ready', () => __awaiter(this, void 0, void 0, function* () {
-                            const nodeInfo = (yield node.id());
+                        const ipfs = new Ipfs(config);
+                        ipfs.on('ready', () => __awaiter(this, void 0, void 0, function* () {
+                            const nodeInfo = (yield ipfs.id());
                             nodeInfoService.setInfo(nodeInfo);
-                            nodeInfoService.getInfo(nodeInfo);
                             logger.log('Ipfs node state: Online');
+                            logger.log(`Ipfs node info: ${JSON.stringify(nodeInfo)}`);
                             nodeReady.next(true);
                         }));
-                        node.on('error', () => {
-                            logger.err('Ipfs node error!');
-                            logger.err('Ipfs node state: Offline');
+                        ipfs.on('error', () => {
+                            logger.err('Ipfs node error!\nIpfs node state: Offline');
                         });
-                        return node;
+                        return ipfs;
                     }
                 },
             ]
