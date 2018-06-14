@@ -39,13 +39,12 @@ let GapiIpfsModule = GapiIpfsModule_1 = class GapiIpfsModule {
                         node.on('ready', () => __awaiter(this, void 0, void 0, function* () {
                             const nodeInfo = (yield node.id());
                             nodeInfoService.setInfo(nodeInfo);
-                            nodeInfoService.getInfo(nodeInfo);
                             logger.log('Ipfs node state: Online');
                             nodeReady.next(true);
                         }));
                         node.on('error', () => {
                             logger.err('Ipfs node error!');
-                            logger.err('Ipfs node state: Offline');
+                            throw new Error('Ipfs node state: Offline');
                         });
                         return node;
                     }
