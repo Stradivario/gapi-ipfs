@@ -25,7 +25,7 @@
   "module": "index.js",
   "typings": "index.d.ts",
   "peerDependencies": {
-    "@gapi/core": "^0.7.286",
+    "@gapi/core": "^0.7.289",
     "rxjs": "^5.5.6"
   },
   "dependencies": {
@@ -33,6 +33,6 @@
   },
   "devDependencies": {
     "@types/node": "^9.4.7",
-    "@gapi/core": "^0.7.286"
+    "@gapi/core": "^0.7.289"
   }
 }
