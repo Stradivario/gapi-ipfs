@@ -8,6 +8,9 @@
 
 https://ipfs.io/ipfs/QmPhYdx4dB6TwBU1KEbYmyET7HQJoLpyERvRD4kMWv3B3a
 
+
+@Gapi was re-written with low level dependency injection with rxjs 6 more [details](https://github.com/rxdi/core)
+
 ## Installation and basic examples:
 ##### To install this Gapi module, run:
 
@@ -22,12 +25,12 @@ Without configuration
 ##### Import inside AppModule or CoreModule
 ```typescript
 
-import { GapiModule } from '@gapi/core';
-import { GapiIpfsModule } from '@gapi/ipfs';
+import { Module } from '@rxdi/core';
+import { IpfsModule } from '@gapi/ipfs';
 
-@GapiModule({
+@Module({
     imports: [
-        GapiIpfsModule.forRoot({
+        IpfsModule.forRoot({
             repo: '/home/user/Desktop/ipfs-test',
             init: true,
             start: true,
@@ -56,8 +59,8 @@ Interact with Ipfs
 note: keep in mind that this is beta testing contribution is appreciated
 
 ```typescript
-import { Inject, Service } from '@gapi/core';
-import { IPFS_NODE_READY, IPFS } from '@gapi/ipfs';
+import { Inject, Service } from '@rxdi/core';
+import { IPFS } from '@gapi/ipfs';
 import { Readable } from 'stream';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -66,24 +69,8 @@ import { Subject } from 'rxjs/Subject';
 export class IpfsTestService {
 
     constructor(
-        @Inject(IPFS) private ipfs: IPFS,
-        @Inject(IPFS_NODE_READY) private ipfsNodeReady: Subject<boolean>
-    ) {
-        this.ipfsNodeReady
-            .switchMap(
-                () => Observable.fromPromise(this.ipfsTest())
-            )
-            .subscribe();
-
-        // Later rxjs 6 will be used as follow (gapi will migrate to rxjs 6)
-
-        // import { fromPromise } from 'rxjs';
-        // import { switchMap } from 'rxjs/operators';
-        // this.ipfsReady.pipe(
-        //     switchMap(() => fromPromise(this.ipfsTest()))
-        // ).subscribe();
-
-    }
+        @Inject(IPFS) private ipfs: IPFS
+    ) {}
 
     async ipfsTest() {
         const content = new Readable();
