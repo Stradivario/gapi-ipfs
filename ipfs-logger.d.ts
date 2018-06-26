@@ -1,4 +1,4 @@
-import { GapiIpfsConfig } from './gapi-ipfs-config';
+import { GapiIpfsConfig } from './ipfs-config';
 export declare class GapiIpfsLogger {
     private config;
     constructor(config: GapiIpfsConfig);

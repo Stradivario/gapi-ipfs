@@ -1,44 +1,46 @@
-import { GapiModule, GapiModuleWithServices } from "@gapi/core";
-import { GapiIpfsConfig } from './gapi-ipfs-config';
-import { GapiIpfsLogger } from './gapi-ipfs-logger';
-import { IPFS, IPFS_NODE_READY, Options } from "./gapi-ipfs-injection";
-import { Subject } from "rxjs";
-import { GapiIpfsNodeInfoService } from "./gapi-ipfs-node-info";
+import { Module, ModuleWithServices } from "@rxdi/core";
+import { GapiIpfsConfig } from './ipfs-config';
+import { GapiIpfsLogger } from './ipfs-logger';
+import { IPFS, IPFS_NODE_READY, Options } from "./ipfs-injection";
+import { Observable, Subject } from "rxjs";
+import { GapiIpfsNodeInfoService } from "./ipfs-node-info";
 import Ipfs = require('ipfs');
 
-@GapiModule({
+@Module({
     services: [GapiIpfsConfig]
 })
-export class GapiIpfsModule {
-    static forRoot(config?: GapiIpfsConfig): GapiModuleWithServices {
+export class IpfsModule {
+    static forRoot(config?: GapiIpfsConfig): ModuleWithServices {
         return {
-            gapiModule: GapiIpfsModule,
+            module: IpfsModule,
             services: [
                 { provide: IPFS_NODE_READY, useValue: new Subject() },
                 { provide: GapiIpfsConfig, useValue: config || {} },
                 {
                     provide: IPFS,
                     deps: [GapiIpfsLogger, GapiIpfsConfig, IPFS_NODE_READY, GapiIpfsNodeInfoService],
+                    lazy: true,
                     useFactory: (
                         logger: GapiIpfsLogger,
                         config: GapiIpfsConfig,
                         nodeReady: Subject<boolean>,
                         nodeInfoService: GapiIpfsNodeInfoService
                     ) => {
-
-                        const node: IPFS = new Ipfs(config);
-                        node.on('ready', async () => {
-                            logger.log('Ipfs node state: Online');
-                            nodeReady.next(true);
-                            const nodeInfo = (await node.id());
-                            nodeInfoService.setInfo(nodeInfo);
-                            logger.log(`Ipfs node info: ${nodeInfo}`);
+                        return Observable.create(o => {
+                            const node: IPFS = new Ipfs(config);
+                            node.on('ready', async () => {
+                                logger.log('Ipfs node state: Online');
+                                nodeReady.next(true);
+                                o.next(node);
+                                const nodeInfo = (await node.id());
+                                nodeInfoService.setInfo(nodeInfo);
+                                logger.log(`Ipfs node info: ${nodeInfo}`);
+                            });
+                            node.on('error', () => {
+                                logger.err('Ipfs node error!');
+                                throw new Error('Ipfs node state: Offline')
+                            }); 
                         });
-                        node.on('error', () => {
-                            logger.err('Ipfs node error!');
-                            throw new Error('Ipfs node state: Offline')
-                        });
-                        return node;
                     }
                 },
             ]
@@ -46,6 +48,6 @@ export class GapiIpfsModule {
     }
 }
 
-export * from './gapi-ipfs-config';
-export * from './gapi-ipfs-logger';
-export * from './gapi-ipfs-injection';
+export * from './ipfs-config';
+export * from './ipfs-logger';
+export * from './ipfs-injection';

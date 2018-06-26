@@ -9,8 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = require("@gapi/core");
-const gapi_ipfs_config_1 = require("./gapi-ipfs-config");
+const core_1 = require("@rxdi/core");
+const ipfs_config_1 = require("./ipfs-config");
 let GapiIpfsLogger = class GapiIpfsLogger {
     constructor(config) {
         this.config = config;
@@ -28,6 +28,6 @@ let GapiIpfsLogger = class GapiIpfsLogger {
 };
 GapiIpfsLogger = __decorate([
     core_1.Service(),
-    __metadata("design:paramtypes", [gapi_ipfs_config_1.GapiIpfsConfig])
+    __metadata("design:paramtypes", [ipfs_config_1.GapiIpfsConfig])
 ], GapiIpfsLogger);
 exports.GapiIpfsLogger = GapiIpfsLogger;

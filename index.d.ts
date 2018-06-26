@@ -1,8 +1,8 @@
-import { GapiModuleWithServices } from "@gapi/core";
-import { GapiIpfsConfig } from './gapi-ipfs-config';
-export declare class GapiIpfsModule {
-    static forRoot(config?: GapiIpfsConfig): GapiModuleWithServices;
+import { ModuleWithServices } from "@rxdi/core";
+import { GapiIpfsConfig } from './ipfs-config';
+export declare class IpfsModule {
+    static forRoot(config?: GapiIpfsConfig): ModuleWithServices;
 }
-export * from './gapi-ipfs-config';
-export * from './gapi-ipfs-logger';
-export * from './gapi-ipfs-injection';
+export * from './ipfs-config';
+export * from './ipfs-logger';
+export * from './ipfs-injection';

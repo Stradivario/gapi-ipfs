@@ -1,4 +1,4 @@
-import { InjectionToken } from "@gapi/core";
+import { InjectionToken } from "@rxdi/core";
 export declare type Callback<T> = (error: Error, result?: T) => void;
 export interface IPFS {
     constructor(options: Options): any;

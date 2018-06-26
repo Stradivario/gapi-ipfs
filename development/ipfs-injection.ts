@@ -1,5 +1,5 @@
-import { InjectionToken } from "@gapi/core";
-import { GapiIpfsNodeInfoService } from './gapi-ipfs-node-info';
+import { InjectionToken } from "@rxdi/core";
+import { GapiIpfsNodeInfoService } from './ipfs-node-info';
 
 export type Callback<T> = (error: Error, result?: T) => void;
 

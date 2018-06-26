@@ -17,50 +17,53 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = require("@gapi/core");
-const gapi_ipfs_config_1 = require("./gapi-ipfs-config");
-const gapi_ipfs_logger_1 = require("./gapi-ipfs-logger");
-const gapi_ipfs_injection_1 = require("./gapi-ipfs-injection");
+const core_1 = require("@rxdi/core");
+const ipfs_config_1 = require("./ipfs-config");
+const ipfs_logger_1 = require("./ipfs-logger");
+const ipfs_injection_1 = require("./ipfs-injection");
 const rxjs_1 = require("rxjs");
-const gapi_ipfs_node_info_1 = require("./gapi-ipfs-node-info");
+const ipfs_node_info_1 = require("./ipfs-node-info");
 const Ipfs = require("ipfs");
-let GapiIpfsModule = GapiIpfsModule_1 = class GapiIpfsModule {
+let IpfsModule = IpfsModule_1 = class IpfsModule {
     static forRoot(config) {
         return {
-            gapiModule: GapiIpfsModule_1,
+            module: IpfsModule_1,
             services: [
-                { provide: gapi_ipfs_injection_1.IPFS_NODE_READY, useValue: new rxjs_1.Subject() },
-                { provide: gapi_ipfs_config_1.GapiIpfsConfig, useValue: config || {} },
+                { provide: ipfs_injection_1.IPFS_NODE_READY, useValue: new rxjs_1.Subject() },
+                { provide: ipfs_config_1.GapiIpfsConfig, useValue: config || {} },
                 {
-                    provide: gapi_ipfs_injection_1.IPFS,
-                    deps: [gapi_ipfs_logger_1.GapiIpfsLogger, gapi_ipfs_config_1.GapiIpfsConfig, gapi_ipfs_injection_1.IPFS_NODE_READY, gapi_ipfs_node_info_1.GapiIpfsNodeInfoService],
+                    provide: ipfs_injection_1.IPFS,
+                    deps: [ipfs_logger_1.GapiIpfsLogger, ipfs_config_1.GapiIpfsConfig, ipfs_injection_1.IPFS_NODE_READY, ipfs_node_info_1.GapiIpfsNodeInfoService],
+                    lazy: true,
                     useFactory: (logger, config, nodeReady, nodeInfoService) => {
-                        const node = new Ipfs(config);
-                        node.on('ready', () => __awaiter(this, void 0, void 0, function* () {
-                            logger.log('Ipfs node state: Online');
-                            nodeReady.next(true);
-                            const nodeInfo = (yield node.id());
-                            nodeInfoService.setInfo(nodeInfo);
-                            logger.log(`Ipfs node info: ${nodeInfo}`);
-                        }));
-                        node.on('error', () => {
-                            logger.err('Ipfs node error!');
-                            throw new Error('Ipfs node state: Offline');
+                        return rxjs_1.Observable.create(o => {
+                            const node = new Ipfs(config);
+                            node.on('ready', () => __awaiter(this, void 0, void 0, function* () {
+                                logger.log('Ipfs node state: Online');
+                                nodeReady.next(true);
+                                o.next(node);
+                                const nodeInfo = (yield node.id());
+                                nodeInfoService.setInfo(nodeInfo);
+                                logger.log(`Ipfs node info: ${nodeInfo}`);
+                            }));
+                            node.on('error', () => {
+                                logger.err('Ipfs node error!');
+                                throw new Error('Ipfs node state: Offline');
+                            });
                         });
-                        return node;
                     }
                 },
             ]
         };
     }
 };
-GapiIpfsModule = GapiIpfsModule_1 = __decorate([
-    core_1.GapiModule({
-        services: [gapi_ipfs_config_1.GapiIpfsConfig]
+IpfsModule = IpfsModule_1 = __decorate([
+    core_1.Module({
+        services: [ipfs_config_1.GapiIpfsConfig]
     })
-], GapiIpfsModule);
-exports.GapiIpfsModule = GapiIpfsModule;
-__export(require("./gapi-ipfs-config"));
-__export(require("./gapi-ipfs-logger"));
-__export(require("./gapi-ipfs-injection"));
-var GapiIpfsModule_1;
+], IpfsModule);
+exports.IpfsModule = IpfsModule;
+__export(require("./ipfs-config"));
+__export(require("./ipfs-logger"));
+__export(require("./ipfs-injection"));
+var IpfsModule_1;

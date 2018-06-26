@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = require("@gapi/core");
+const core_1 = require("@rxdi/core");
 class Options {
 }
 exports.Options = Options;

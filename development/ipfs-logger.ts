@@ -1,6 +1,5 @@
-import { Service, Inject } from "@gapi/core";
-import { GapiIpfsConfig } from './gapi-ipfs-config';
-import { IPFS } from './gapi-ipfs-injection';
+import { Service } from "@rxdi/core";
+import { GapiIpfsConfig } from './ipfs-config';
 
 @Service()
 export class GapiIpfsLogger {

@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = require("@gapi/core");
+const core_1 = require("@rxdi/core");
 let GapiIpfsNodeInfoService = class GapiIpfsNodeInfoService {
     setInfo(info) {
         this.info = info;

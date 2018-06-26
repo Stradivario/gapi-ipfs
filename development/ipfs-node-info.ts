@@ -1,5 +1,5 @@
-import { Service } from "@gapi/core";
-import { Id } from "./gapi-ipfs-injection";
+import { Service } from "@rxdi/core";
+import { Id } from "./ipfs-injection";
 
 @Service()
 export class GapiIpfsNodeInfoService {
