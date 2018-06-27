@@ -1,4 +1,4 @@
-import { Module, ModuleWithServices } from "@rxdi/core";
+import { Module, ModuleWithServices, ExitHandlerService } from "@rxdi/core";
 import { GapiIpfsConfig } from './ipfs-config';
 import { GapiIpfsLogger } from './ipfs-logger';
 import { IPFS, IPFS_NODE_READY, Options } from "./ipfs-injection";
@@ -18,16 +18,22 @@ export class IpfsModule {
                 { provide: GapiIpfsConfig, useValue: config || {} },
                 {
                     provide: IPFS,
-                    deps: [GapiIpfsLogger, GapiIpfsConfig, IPFS_NODE_READY, GapiIpfsNodeInfoService],
+                    deps: [GapiIpfsLogger, GapiIpfsConfig, IPFS_NODE_READY, GapiIpfsNodeInfoService, ExitHandlerService],
                     lazy: true,
                     useFactory: (
                         logger: GapiIpfsLogger,
                         config: GapiIpfsConfig,
                         nodeReady: Subject<boolean>,
-                        nodeInfoService: GapiIpfsNodeInfoService
+                        nodeInfoService: GapiIpfsNodeInfoService,
+                        exitHandlerService: ExitHandlerService
                     ) => {
                         return Observable.create(o => {
                             const node: IPFS = new Ipfs(config);
+                            exitHandlerService.errorHandler.subscribe(e => {
+                                node.stop(() => {
+                                    console.log('Ipfs node stopped');
+                                });
+                            });
                             node.on('ready', async () => {
                                 logger.log('Ipfs node state: Online');
                                 nodeReady.next(true);
@@ -38,7 +44,9 @@ export class IpfsModule {
                             });
                             node.on('error', () => {
                                 logger.err('Ipfs node error!');
-                                throw new Error('Ipfs node state: Offline')
+                                node.stop(() => {
+                                    throw new Error('Ipfs node state: Offline')
+                                });
                             }); 
                         });
                     }

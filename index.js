@@ -33,11 +33,16 @@ let IpfsModule = IpfsModule_1 = class IpfsModule {
                 { provide: ipfs_config_1.GapiIpfsConfig, useValue: config || {} },
                 {
                     provide: ipfs_injection_1.IPFS,
-                    deps: [ipfs_logger_1.GapiIpfsLogger, ipfs_config_1.GapiIpfsConfig, ipfs_injection_1.IPFS_NODE_READY, ipfs_node_info_1.GapiIpfsNodeInfoService],
+                    deps: [ipfs_logger_1.GapiIpfsLogger, ipfs_config_1.GapiIpfsConfig, ipfs_injection_1.IPFS_NODE_READY, ipfs_node_info_1.GapiIpfsNodeInfoService, core_1.ExitHandlerService],
                     lazy: true,
-                    useFactory: (logger, config, nodeReady, nodeInfoService) => {
+                    useFactory: (logger, config, nodeReady, nodeInfoService, exitHandlerService) => {
                         return rxjs_1.Observable.create(o => {
                             const node = new Ipfs(config);
+                            exitHandlerService.errorHandler.subscribe(e => {
+                                node.stop(() => {
+                                    console.log('Ipfs node stopped');
+                                });
+                            });
                             node.on('ready', () => __awaiter(this, void 0, void 0, function* () {
                                 logger.log('Ipfs node state: Online');
                                 nodeReady.next(true);
@@ -48,7 +53,9 @@ let IpfsModule = IpfsModule_1 = class IpfsModule {
                             }));
                             node.on('error', () => {
                                 logger.err('Ipfs node error!');
-                                throw new Error('Ipfs node state: Offline');
+                                node.stop(() => {
+                                    throw new Error('Ipfs node state: Offline');
+                                });
                             });
                         });
                     }

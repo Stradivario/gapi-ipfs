@@ -48,7 +48,6 @@ export interface IPFS {
 export interface ExperimentalFeatures {
     pubsub: true
 }
-
 export class Options {
     init?: boolean;
     start?: boolean;
