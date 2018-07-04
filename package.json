@@ -25,13 +25,13 @@
   "module": "index.js",
   "typings": "index.d.ts",
   "peerDependencies": {
-    "@rxdi/core": "^0.0.160"
+    "@rxdi/core": "^0.0.163"
   },
   "dependencies": {
     "ipfs": "^0.29.3"
   },
   "devDependencies": {
-    "@rxdi/core": "^0.0.160",
+    "@rxdi/core": "^0.0.163",
     "@types/node": "^9.4.7",
     "rxjs": "^6.2.1"
   }
