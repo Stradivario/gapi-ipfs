@@ -28,7 +28,7 @@
     "ipfs": "^0.29.3"
   },
   "devDependencies": {
-    "@rxdi/core": "^0.0.223",
+    "@rxdi/core": "^0.0.225",
     "@types/node": "^9.4.7",
     "rxjs": "^6.2.1"
   }
