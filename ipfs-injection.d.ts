@@ -30,7 +30,7 @@ export interface IPFS {
     ping(callback: (error: Error) => void): void;
     ping(): Promise<void>;
     pubsub: any;
-    on(event: string, callback: () => void): void;
+    on(event: string, callback: (e: any) => void): void;
 }
 export interface ExperimentalFeatures {
     pubsub: true;

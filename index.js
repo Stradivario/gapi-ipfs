@@ -17,6 +17,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+var IpfsModule_1;
 const core_1 = require("@rxdi/core");
 const ipfs_config_1 = require("./ipfs-config");
 const ipfs_logger_1 = require("./ipfs-logger");
@@ -51,8 +52,11 @@ let IpfsModule = IpfsModule_1 = class IpfsModule {
                                 nodeInfoService.setInfo(nodeInfo);
                                 logger.log(`Ipfs node info: ${nodeInfo}`);
                             }));
-                            node.on('error', () => {
-                                logger.err('Ipfs node error!');
+                            node.on('error', (e) => {
+                                logger.err(`
+                                Ipfs node error!
+                                ${JSON.stringify(e)}
+                                `);
                                 node.stop(() => {
                                     throw new Error('Ipfs node state: Offline');
                                 });
@@ -73,4 +77,3 @@ exports.IpfsModule = IpfsModule;
 __export(require("./ipfs-config"));
 __export(require("./ipfs-logger"));
 __export(require("./ipfs-injection"));
-var IpfsModule_1;

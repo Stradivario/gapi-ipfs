@@ -42,12 +42,15 @@ export class IpfsModule {
                                 nodeInfoService.setInfo(nodeInfo);
                                 logger.log(`Ipfs node info: ${nodeInfo}`);
                             });
-                            node.on('error', () => {
-                                logger.err('Ipfs node error!');
+                            node.on('error', (e) => {
+                                logger.err(`
+                                Ipfs node error!
+                                ${JSON.stringify(e)}
+                                `);
                                 node.stop(() => {
                                     throw new Error('Ipfs node state: Offline')
                                 });
-                            }); 
+                            });
                         });
                     }
                 },

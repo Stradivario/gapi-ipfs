@@ -42,7 +42,7 @@ export interface IPFS {
 
     pubsub: any; 
 
-    on(event: string, callback: () => void): void;
+    on(event: string, callback: (e) => void): void;
 }
 
 export interface ExperimentalFeatures {
