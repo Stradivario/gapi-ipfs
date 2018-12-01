@@ -25,7 +25,7 @@
   "module": "index.js",
   "typings": "index.d.ts",
   "dependencies": {
-    "ipfs": "^0.32.2"
+    "ipfs": "^0.33.1"
   },
   "devDependencies": {
     "@rxdi/core": "^0.0.341",
